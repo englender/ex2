@@ -8,7 +8,7 @@
 #ifndef EX2_IMAGETAGGER_H
 #define EX2_IMAGETAGGER_H
 
-class ImageTagger {
+class Image {
     int imageID;
     int max_segments;
 
@@ -16,19 +16,26 @@ class ImageTagger {
     Node_list<int,int>* unlabled_segments;
 
 public:
-    ImageTagger(const int imageID,const int segments);
+    Image(const int imageID,const int segments);
+    ~Image();
+    int get_imageID();
+    bool AddLabelToImage(const int segmentID, const int label);
+    const int GetLabelFromImage(const int segmentID);
+    bool DeleteLabelFromImage(const int segmentID);
+    Node_list<int,int>* GetAllUnLabeledSegments();
+
 };
 
-ImageTagger::ImageTagger(const int imageID, const int segments): imageID(imageID),
-                                                                 max_segments(segments){
-    this->segments_array=(int*)malloc(this->max_segments* sizeof(int));
+class ImageTagger {
+    Map_tree<int,Image>* images;
+    int max_segments;
 
-    this->unlabled_segments=new Node_list<int,int>();
+public:
+    ImageTagger(int segments);
+    ~ImageTagger();
 
-    for (int i = 0; i < segments; i++) {                //initialize the structs
-        this->segments_array[i]=-1;
-        this->unlabled_segments->add_node(i,-1);
-    }
-}
+};
+
+
 
 #endif //EX2_IMAGETAGGER_H
