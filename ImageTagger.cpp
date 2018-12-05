@@ -30,7 +30,11 @@ int Image::get_imageID(){
 }
 
 bool Image::AddLabelToImage(const int segmentID, const int label){
-
+    /*
+     * recieves the segmentID and label to add to the relevent segmentID
+     * if the segment already has a label returns false
+     * updates the segments ID label, and removes it from unlabeled_segments list
+     */
     if(segments_array[segmentID]!= EMPTY_SEG)       //return false if segment
         return false;                               // already labeled
 
@@ -65,6 +69,10 @@ ImageTagger::ImageTagger(int segments) : max_segments(segments){
     this->images=new Map_tree<int,Image>;
 }
 
+int ImageTagger::get_segments(){
+    return this->max_segments;
+}
+
 bool ImageTagger::image_exist(int imageID){
     /*
      * we code "find" to return father of the relevant key if it's not exist
@@ -72,8 +80,8 @@ bool ImageTagger::image_exist(int imageID){
      *
      * ~~~~we need to think if we want to change the original find~~~~~~~~~
      * */
-    if(this->images->find(imageID)->get_key()!=imageID)
-        return false;
+    if(this->images->find(imageID)== nullptr)
+        return false;           //if there is no image with imageID
     return true;
 }
 
@@ -84,14 +92,25 @@ bool ImageTagger::add_image(int imageID){
      * else, adds create new Image with the imageID, add it to the tree,
      * and return true
     */
-    if(this->image_exist(imageID)==true)
-        return false;
+    if(this->image_exist(imageID))
+        return false;                       //the image already exists
     Image *new_image=new Image(imageID,this->max_segments);
     this->images->add_node(imageID,*new_image);
     return true;
 }
 bool ImageTagger::delete_image(int imageID) {
-    if(this->image_exist(imageID)!=true)
+    if(!this->image_exist(imageID))
         return false;
-//    this->images->remove_node()
+//    this->images->remove_node()           //???
+}
+
+bool ImageTagger::is_segment_labeled(int imageID, int segmentID){
+    /*
+     * recieves an image that exists in the tree and a segment ID
+     * returns true if segment is labled and false if it isn't
+     */
+    Image *new_image=this->images->find(imageID);
+    if(new_image->GetLabelFromImage(segmentID)== EMPTY_SEG)
+        return false;
+    return true;
 }

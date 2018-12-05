@@ -33,9 +33,11 @@ class ImageTagger {
 public:
     ImageTagger(int segments);
 //    ~ImageTagger();
-    bool image_exist(int imageID);  //check if need to static
+    int get_segments();
+    bool image_exist(int imageID);
     bool add_image(int imageID);
     bool delete_image(int imageID);
+    bool is_segment_labeled(int imageID, int segmentID);
 
 };
 

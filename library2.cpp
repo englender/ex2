@@ -2,6 +2,7 @@
 // Created by ronien on 05/12/2018.
 //
 
+#define EMPTY_SEG -1
 #include "library2.h"
 #include "ImageTagger.h"
 
@@ -35,4 +36,16 @@ StatusType DeleteImage(void *DS, int imageID){
 
 
 
+}
+StatusType AddLabel(void *DS, int imageID, int segmentID, int label){
+    if(DS == nullptr || imageID<=0 || segmentID<0 ||
+            segmentID>=((ImageTagger*)DS)->get_segments() || label<=0)
+        return INVALID_INPUT;
+    if(!((ImageTagger*)DS)->image_exist(imageID))
+        return FAILURE;         //the image with imageID does not exist in tree
+
+    Image *image_to_update=this->images->find(imageID);
+    if(!image_to_update->AddLabelToImage(segmentID,label))
+        return FAILURE;         //there is already a label in the segmentID of the image
+    return SUCCESS;
 }
