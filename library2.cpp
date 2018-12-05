@@ -19,7 +19,7 @@ void *Init(int segments){
 StatusType AddImage(void *DS, int imageID){
     if(DS== nullptr || imageID<=0)
         return INVALID_INPUT;
-    
+
     try{
         if(((ImageTagger*)DS)->add_image(imageID)==false)
             return FAILURE;
@@ -27,4 +27,12 @@ StatusType AddImage(void *DS, int imageID){
         return ALLOCATION_ERROR;
     }
     return SUCCESS;
+}
+
+StatusType DeleteImage(void *DS, int imageID){
+    if(DS== nullptr || imageID<=0)
+        return INVALID_INPUT;
+
+
+
 }

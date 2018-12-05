@@ -90,3 +90,8 @@ bool ImageTagger::add_image(int imageID){
     this->images->add_node(imageID,*new_image);
     return true;
 }
+bool ImageTagger::delete_image(int imageID) {
+    if(this->image_exist(imageID)!=true)
+        return false;
+//    this->images->remove_node()
+}
