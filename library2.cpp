@@ -6,7 +6,7 @@
 #include "ImageTagger.h"
 
 void *Init(int segments){
-    ImageTagger<int,Image>* DS;
+    ImageTagger* DS;
 
     try {
         DS  = new ImageTagger(segments);
