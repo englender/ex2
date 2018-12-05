@@ -32,10 +32,11 @@ class ImageTagger {
 
 public:
     ImageTagger(int segments);
-    ~ImageTagger();
+//    ~ImageTagger();
+    bool image_exist(int imageID);
+    bool add_image(int imageID);
 
 };
-
 
 
 #endif //EX2_IMAGETAGGER_H

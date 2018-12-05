@@ -15,3 +15,16 @@ void *Init(int segments){
     }
     return (void*)DS;
 }
+
+StatusType AddImage(void *DS, int imageID){
+    if(DS== nullptr || imageID<=0)
+        return INVALID_INPUT;
+    
+    try{
+        if(((ImageTagger*)DS)->add_image(imageID)==false)
+            return FAILURE;
+    }catch (std::exception& e){
+        return ALLOCATION_ERROR;
+    }
+    return SUCCESS;
+}
