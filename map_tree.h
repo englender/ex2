@@ -296,6 +296,7 @@ void Map_tree<K,D>::add_node(const K& key,const D& data){
         papa->set_right_son(new_node);
     }
     add_correct(new_node->get_key(),this->get_root(), nullptr);
+    this->size++;
 }
 
 template <class K, class D>
@@ -315,6 +316,7 @@ void Map_tree<K,D>::remove_node(TreeNode<K,D>* node_to_remove) {
     }
     delete_correct(*key,this->get_root(), nullptr);
     delete key;
+    this->size--;
 }
 
 template <class K, class D>
