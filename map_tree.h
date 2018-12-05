@@ -252,29 +252,38 @@ TreeNode<K,D>* Map_tree<K,D>::find_recurse(const K& key, TreeNode<K,D>* current_
     TreeNode<K, D> *node_ptr;
     if (current_node->get_key() > key) {
         node_ptr = find_recurse(key, current_node->get_left_son());
-        if (node_ptr == nullptr)
-            return current_node;
-
-        return node_ptr;
+//        if (node_ptr == nullptr)
+//            return current_node;
+//
+//        return node_ptr;
 
     } else {
         node_ptr=find_recurse(key, current_node->get_right_son());
-        if (node_ptr == nullptr)
-            return current_node;
-
-        return node_ptr;
-
+//        if (node_ptr == nullptr)
+//            return current_node;
+//
+//        return node_ptr;
     }
+    return node_ptr;
 }
 
 template <class K, class D>
 TreeNode<K,D>* Map_tree<K,D>::find_papa(const K& key, TreeNode<K,D>* papa) {
-    if(papa->get_key()==key){
+    if(papa == nullptr || papa->get_key()==key){
         return nullptr;
     }
-    if(papa->get_key()<key && papa->get_right_son()->get_key()==key ||
-       papa->get_key()>key && papa->get_left_son()->get_key()==key)
+    if(papa->get_right_son()== nullptr && papa->get_left_son()== nullptr)
         return papa;
+    if(papa->get_key()<key && papa->get_right_son()!= nullptr &&
+            papa->get_right_son()->get_key()==key)
+        return papa;                //papa_key<key and also it has right_son_key==key
+    if(papa->get_key()<key && papa->get_right_son()== nullptr)
+        return papa;                //if papa_key<key and also it has no right son
+    if(papa->get_key()>key && papa->get_left_son()!= nullptr &&
+            papa->get_left_son()->get_key()==key)
+        return papa;                //papa_key>key and also it has left_son_key==key
+    if(papa->get_key()>key && papa->get_left_son()== nullptr)
+            return papa;            //if papa_key>key and also it has no left son
 
     if(papa->get_key()<key)
         return find_papa(key,papa->get_right_son());
@@ -286,7 +295,7 @@ TreeNode<K,D>* Map_tree<K,D>::find_papa(const K& key, TreeNode<K,D>* papa) {
 template <class K, class D>
 void Map_tree<K,D>::add_node(const K& key,const D& data){
     TreeNode<K,D>* new_node = new TreeNode<K,D>(key, data);
-    TreeNode<K,D>* papa=this->find(new_node->get_key());
+    TreeNode<K,D>* papa=this->find_papa(new_node->get_key(),this->get_root());
 
     if(papa== nullptr)                                  // Empty tree
         this->set_root(new_node);
