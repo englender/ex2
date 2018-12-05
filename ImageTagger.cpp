@@ -73,6 +73,10 @@ int ImageTagger::get_segments(){
     return this->max_segments;
 }
 
+//Image* ImageTagger::get_image(int imageID){
+//    return *(this->images->find(imageID));
+//}
+
 bool ImageTagger::image_exist(int imageID){
     /*
      * we code "find" to return father of the relevant key if it's not exist
@@ -104,13 +108,8 @@ bool ImageTagger::delete_image(int imageID) {
 //    this->images->remove_node()           //???
 }
 
-bool ImageTagger::is_segment_labeled(int imageID, int segmentID){
-    /*
-     * recieves an image that exists in the tree and a segment ID
-     * returns true if segment is labled and false if it isn't
-     */
-    Image *new_image=this->images->find(imageID);
-    if(new_image->GetLabelFromImage(segmentID)== EMPTY_SEG)
-        return false;
-    return true;
-}
+
+//int ImageTagger::get_label(int imageID, int segmentID){
+//    Image *new_image=this->images->find(imageID);
+//    return new_image->GetLabelFromImage(segmentID);
+//}

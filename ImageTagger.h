@@ -34,10 +34,11 @@ public:
     ImageTagger(int segments);
 //    ~ImageTagger();
     int get_segments();
+    Image* get_image(int imageID);
     bool image_exist(int imageID);
     bool add_image(int imageID);
     bool delete_image(int imageID);
-    bool is_segment_labeled(int imageID, int segmentID);
+    int get_label(int imageID, int segmentID);
 
 };
 
