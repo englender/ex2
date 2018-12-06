@@ -25,13 +25,10 @@ Image::~Image(){
 
 }
 
-int Image::get_imageID(){
-    return this->imageID;
-}
 
-bool Image::AddLabelToImage(const int segmentID, const int label){
+bool Image::add_label_to_image(const int segmentID, const int label){
     /*
-     * recieves the segmentID and label to add to the relevent segmentID
+     * receives the segmentID and label to add to the relevent segmentID
      * if the segment already has a label returns false
      * updates the segments ID label, and removes it from unlabeled_segments list
      */
@@ -44,11 +41,16 @@ bool Image::AddLabelToImage(const int segmentID, const int label){
     return true;
 }
 
-const int Image::GetLabelFromImage(const int segmentID){
+const int Image::get_label_from_image(const int segmentID){
     return segments_array[segmentID];       //if there is no label returns -1
 }
 
-bool Image::DeleteLabelFromImage(const int segmentID){
+bool Image::delete_label_from_image(const int segmentID){
+    /*
+     * receives segmentID and removes the label from that segmentID
+     * if there is no label, returns false
+     * removes the label and adds the image to unlabeled list, and returns true
+     */
     if(segments_array[segmentID] == EMPTY_SEG)
         return false;
     segments_array[segmentID]=EMPTY_SEG;
@@ -56,11 +58,21 @@ bool Image::DeleteLabelFromImage(const int segmentID){
     return true;
 }
 
-Node_list<int,int>* Image::GetAllUnLabeledSegments(){
-    return this->unlabled_segments;
-};
+int* Image::get_all_unlabeledSegments(int *segments){
+    segments=(int*)malloc(sizeof(this->num_of_unlabeledSegments()));
 
+    ListNode<int,int>* node_ptr=this->unlabled_segments->get_first();
 
+    for (int i = 0; i <this->num_of_unlabeledSegments() ; ++i) {
+        segments[i]=node_ptr->get_key();
+        node_ptr=node_ptr->get_next();
+    }
+    return segments;
+}
+
+int Image::num_of_unlabeledSegments(){
+    return this->unlabled_segments->get_size();
+}
 //----------------------------------------------------------------------------//
 //---------------------------ImageTagger Implement----------------------------//
 //----------------------------------------------------------------------------//
@@ -73,17 +85,25 @@ int ImageTagger::get_segments(){
     return this->max_segments;
 }
 
-//Image* ImageTagger::get_image(int imageID){
-//    return *(this->images->find(imageID));
-//}
+Image* ImageTagger::get_image(int imageID){
+    /*
+     * returns Image type with the imageID
+     * returns nullptr in case there is no image with the imageID
+     */
+    TreeNode<int,Image>* image_node= this->images->find(imageID);
+
+    if(image_node== nullptr){
+        return nullptr;
+    }
+    Image* image= (image_node->get_data());
+    return image;
+}
+
 
 bool ImageTagger::image_exist(int imageID){
     /*
-     * we code "find" to return father of the relevant key if it's not exist
-     * so we need to check if the returning node have the same key that was sent
-     *
-     * ~~~~we need to think if we want to change the original find~~~~~~~~~
-     * */
+     * returns true/false if image exists/doesn't exist
+     */
     if(this->images->find(imageID)== nullptr)
         return false;           //if there is no image with imageID
     return true;
@@ -103,13 +123,12 @@ bool ImageTagger::add_image(int imageID){
     return true;
 }
 bool ImageTagger::delete_image(int imageID) {
-    if(!this->image_exist(imageID))
-        return false;
-//    this->images->remove_node()           //???
+    TreeNode<int,Image>* image_node= this->images->find(imageID);
+
+    if(image_node == nullptr)
+        return false;           //image does not exist
+
+    this->images->remove_node(image_node);
+    return true;                //image removed
 }
 
-
-//int ImageTagger::get_label(int imageID, int segmentID){
-//    Image *new_image=this->images->find(imageID);
-//    return new_image->GetLabelFromImage(segmentID);
-//}

@@ -18,11 +18,11 @@ class Image {
 public:
     Image(const int imageID,const int segments);
     ~Image();
-    int get_imageID();
-    bool AddLabelToImage(const int segmentID, const int label);
-    const int GetLabelFromImage(const int segmentID);
-    bool DeleteLabelFromImage(const int segmentID);
-    Node_list<int,int>* GetAllUnLabeledSegments();
+    bool add_label_to_image(const int segmentID, const int label);
+    const int get_label_from_image(const int segmentID);
+    bool delete_label_from_image(const int segmentID);
+    int* get_all_unlabeledSegments(int *segments);
+    int num_of_unlabeledSegments();
 
 };
 
@@ -38,7 +38,7 @@ public:
     bool image_exist(int imageID);
     bool add_image(int imageID);
     bool delete_image(int imageID);
-    int get_label(int imageID, int segmentID);
+
 
 };
 

@@ -27,7 +27,7 @@ public:
     TreeNode(const K& key, const D& data);
 
     const K& get_key();
-    const D& get_data();
+    D* get_data();
     const int get_height();
 
     TreeNode* get_left_son();
@@ -107,8 +107,8 @@ const K& TreeNode<K,D>::get_key() {
 }
 
 template <class K, class D>
-const D& TreeNode<K,D>::get_data() {
-    return this->data;
+D* TreeNode<K,D>::get_data() {
+    return &this->data;
 }
 
 template <class K, class D>
