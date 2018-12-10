@@ -75,17 +75,11 @@ public:
     TreeNode<K,D>* find_papa(const K& key, TreeNode<K,D>* current_node);
     ostream& printTree(ostream& os);
     ostream& print(ostream& os, TreeNode<K,D>* node_to_print);
-//    void swap_right_sons(TreeNode<K,D>* a,TreeNode<K,D>* b);
-//    void remove_and_switch_node(TreeNode<K,D>* node_to_remove,TreeNode<K,D>* papa);
-//    void remove_node_with_one_son(TreeNode<K,D>* node_to_remove,TreeNode<K,D>* papa);
-
 
     void remove_son_with_no_grandsons(TreeNode<K,D>* papa, TreeNode<K,D>* node_to_remove) ;
     void remove_son_with_one_grandson(TreeNode<K,D>* papa, TreeNode<K,D>* node_to_remove) ;
     void remove_son_with_two_grandson(TreeNode<K,D>* papa, TreeNode<K,D>* node_to_remove) ;
     void swap_right_sons(TreeNode<K,D>* a,TreeNode<K,D>* b);
-
-
 
     void delete_correct(const K& key, TreeNode<K,D>* current_node, TreeNode<K,D>* papa);
 
@@ -147,6 +141,10 @@ void TreeNode<K,D>::set_right_son(TreeNode<K,D>* right_son){
 
 template <class K, class D>
 void TreeNode<K,D>::set_height(){
+    /*
+     * sets the node's height. max height between his sons +1
+     * if the node has no sons - height is set to 0
+     */
     int left_height=this->get_left_height();
     int right_height=this->get_right_height();
     this->height=(std::max(left_height,right_height)+1);
@@ -173,11 +171,18 @@ int TreeNode<K,D>::get_left_height(){
 
 template <class K, class D>
 int TreeNode<K,D>::get_balance_factor(){
+    /*
+     * returns node's balance factor - the difference between left son height and right son height
+     */
     return (this->get_left_height())-(this->get_right_height());
 }
 
 template <class K, class D>
 ostream& TreeNode<K,D>::printNode(ostream& os) {
+    /*
+     * inside function for printing
+     * prints "Key: XXX | Left: XXX | Right: XXX | Height: XXX | BF: XXX "
+     */
     os << "Key: " << this->get_key() << " | Left: ";
     if(this->get_left_son()== nullptr)
         os << "-";
@@ -213,16 +218,6 @@ Map_tree<K,D>::~Map_tree() {
 }
 
 template <class K, class D>
-void Map_tree<K,D>::delete_recurse(TreeNode<K,D>* node_to_delete){
-    if(node_to_delete== nullptr)
-        return;
-
-    delete_recurse(node_to_delete->get_left_son());
-    delete_recurse(node_to_delete->get_right_son());
-    delete node_to_delete;
-
-}
-template <class K, class D>
 TreeNode<K,D>* Map_tree<K,D>::get_root(){
     return this->root;
 }
@@ -243,32 +238,31 @@ TreeNode<K,D>* Map_tree<K,D>::find(const K& key){
 
 template <class K, class D>
 TreeNode<K,D>* Map_tree<K,D>::find_recurse(const K& key, TreeNode<K,D>* current_node) {
-    if (current_node == nullptr)
+    /*
+     * finds the node with the sent key, and returns that node
+     * if there is no node with the key in the tree, returns null
+     */
+    if (current_node == nullptr)                //stop conditions - arrived at bottom of the tree
         return nullptr;
 
-    else if (current_node->get_key() == key)
+    else if (current_node->get_key() == key)    //stop conditions - found the required node
         return current_node;
 
     TreeNode<K, D> *node_ptr;
-    if (current_node->get_key() > key) {
+    if (current_node->get_key() > key) {        //the required key is smaller than the current, continue left
         node_ptr = find_recurse(key, current_node->get_left_son());
-//        if (node_ptr == nullptr)
-//            return current_node;
-//
-//        return node_ptr;
-
-    } else {
+    } else {                                    //the required key is bigger than the current, continue right
         node_ptr=find_recurse(key, current_node->get_right_son());
-//        if (node_ptr == nullptr)
-//            return current_node;
-//
-//        return node_ptr;
     }
-    return node_ptr;
+    return node_ptr;                            // ?????? roni - not sure we need this ??????
 }
 
 template <class K, class D>
 TreeNode<K,D>* Map_tree<K,D>::find_papa(const K& key, TreeNode<K,D>* papa) {
+    /*
+     * receives key of node to add/remove, and the tree's root node
+     * returns the father of the node to add/remove
+     */
     if(papa == nullptr || papa->get_key()==key){
         return nullptr;
     }
@@ -285,7 +279,7 @@ TreeNode<K,D>* Map_tree<K,D>::find_papa(const K& key, TreeNode<K,D>* papa) {
     if(papa->get_key()>key && papa->get_left_son()== nullptr)
             return papa;            //if papa_key>key and also it has no left son
 
-    if(papa->get_key()<key)
+    if(papa->get_key()<key)         //the required key is bigger than the current, continue right
         return find_papa(key,papa->get_right_son());
 
     return find_papa(key,papa->get_left_son());
@@ -294,6 +288,11 @@ TreeNode<K,D>* Map_tree<K,D>::find_papa(const K& key, TreeNode<K,D>* papa) {
 
 template <class K, class D>
 void Map_tree<K,D>::add_node(const K& key,const D& data){
+    /*
+     * receives the key and data of new node to add
+     * finds the node's father and add it to the tree as his son
+     * corrects the BF of the tree after adding the node
+     */
     TreeNode<K,D>* new_node = new TreeNode<K,D>(key, data);
     TreeNode<K,D>* papa=this->find_papa(new_node->get_key(),this->get_root());
 
@@ -310,6 +309,11 @@ void Map_tree<K,D>::add_node(const K& key,const D& data){
 
 template <class K, class D>
 void Map_tree<K,D>::remove_node(TreeNode<K,D>* node_to_remove) {
+    /*
+     * receives node to remove.
+     * finds it's father and removes him as his son, then removes the node
+     * corrects BF of tree after removing the node
+     */
     TreeNode<K,D>* papa=find_papa(node_to_remove->get_key(), this->get_root());
     K* key=new K(node_to_remove->get_key());
     if(node_to_remove->get_right_son()== nullptr &&
@@ -326,6 +330,21 @@ void Map_tree<K,D>::remove_node(TreeNode<K,D>* node_to_remove) {
     delete_correct(*key,this->get_root(), nullptr);
     delete key;
     this->size--;
+}
+
+template <class K, class D>
+void Map_tree<K,D>::delete_recurse(TreeNode<K,D>* node_to_delete){
+    /*
+     * function called from Map_tree destructor
+     * receives the tree's root and removes all nodes in the tree
+     */
+    if(node_to_delete== nullptr)
+        return;
+
+    delete_recurse(node_to_delete->get_left_son());
+    delete_recurse(node_to_delete->get_right_son());
+    delete node_to_delete;
+
 }
 
 template <class K, class D>
