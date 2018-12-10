@@ -20,14 +20,51 @@ class ListNode{
 public:
     ListNode(const K& key, const D& data);
 
+/*
+ * Description: gets the node's key
+ * Input:   none.
+ * Output:  the node's key
+ */
     const K& get_key();
+
+/*
+ * Description: gets the node's data
+ * Input:   none.
+ * Output:  the node's data
+ */
     const D& get_data();
 
+/*
+ * Description: gets the node's next_node
+ * Input:   none.
+ * Output:  the node's next_node
+ */
     ListNode* get_next();           //check about constant!!!
+
+/*
+ * Description: gets the node's prev_node
+ * Input:   none.
+ * Output:  the node's prev_node
+ */
     ListNode* get_prev();
+
+/*
+ * Description: sets the node's next_node
+ * Input:   next - the requested node's next_node
+ * Output:  none.
+ */
     void set_next(ListNode* next);
+
+/*
+ * Description: sets the node's prev_node
+ * Input:   previous - the requested node's prev_node
+ * Output:  none.
+ */
     void set_prev(ListNode* previous);
 
+/*
+ * Description: inside function for printing
+ */
     ostream& printNode(ostream& os);
 
 };
@@ -41,13 +78,53 @@ public:
     Node_list();
     ~Node_list();
 
+/*
+ * Description: gets the lists first node
+ * Input:   none.
+ * Output:  the lists first node
+ */
     ListNode<K,D>* get_first();
+
+/*
+ * Description: sets the lists first node
+ * Input:   n - the requested node to inserts to list first
+ * Output:  none
+ */
     void set_first(ListNode<K,D>* n);
+
+/*
+ * Description: gets the list's size
+ * Input:   none.
+ * Output:  the tree's size
+ */
     int get_size() const;
+
+/*
+ * Description: adds a new node to the list
+ * inserts the node in the beginning of the list
+ * Input:   key - the key of new node to add
+ *          data - the data of new node to add
+ * Output:  none
+ */
     void add_node(const K& key, const D& data);
+
+/*
+ * Description: find's the node with the given key, using recurse finc find_recurse
+ * Input:   key - the key of the node to find
+ * Output:  result - the node with the given key. if there is no node in the tree with the key, returns null
+ */
     ListNode<K,D>* find(const K& key);
+
+/*
+ * Description: removes the node from the list
+ * Input:   node_ptr - the required node to remove.
+ * Output:  none.
+ */
     void remove_node(ListNode<K,D>* node_ptr);
 
+/*
+ * Description: inside function for printing
+ */
     ostream& printList(ostream& os);
 
 };
