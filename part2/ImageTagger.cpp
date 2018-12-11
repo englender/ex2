@@ -63,7 +63,7 @@ int* Image::get_all_unlabeledSegments(int *segments){
 
     ListNode<int,int>* node_ptr=this->unlabled_segments->get_first();
 
-    for (int i = 0; i <this->num_of_unlabeledSegments() ; ++i) {
+    for (int i = 0; i <this->num_of_unlabeledSegments() ; i++) {
         segments[i]=node_ptr->get_key();
         node_ptr=node_ptr->get_next();
     }
@@ -73,6 +73,20 @@ int* Image::get_all_unlabeledSegments(int *segments){
 int Image::num_of_unlabeledSegments(){
     return this->unlabled_segments->get_size();
 }
+
+bool Image::label_exist(int label){
+    for (int i = 0; i < this->max_segments; i++) {
+        if(this->segments_array[i]==label)
+            return true;
+    }
+    return false;
+}
+
+const int* Image::get_segments_array() {
+
+    return this->segments_array;
+}
+
 //----------------------------------------------------------------------------//
 //---------------------------ImageTagger Implement----------------------------//
 //----------------------------------------------------------------------------//
@@ -132,3 +146,43 @@ bool ImageTagger::delete_image(int imageID) {
     return true;                //image removed
 }
 
+int ImageTagger::count_labels(int label){
+
+    return this->count_label_recurse(this->images->get_root(),0,label);
+}
+
+
+int ImageTagger::count_label_recurse(TreeNode<int,Image>* current, int sum, int label){
+    if(current== nullptr)
+        return 0;
+
+    sum+=count_label_recurse(current->get_left_son(), sum, label);
+    sum+=count_label_recurse(current->get_right_son(), sum, label);
+
+    if(((Image*)current->get_data())->label_exist(label))
+        sum++;
+    return sum;
+}
+
+
+void ImageTagger::initial_segments_arrays(TreeNode<int,Image>* current, int label,
+                                          int *index, int **images,
+                                          int **segments){
+    if(current== nullptr)
+        return;
+
+    initial_segments_arrays(current->get_left_son(),label,index,images,segments);
+
+    if(((Image*)current->get_data())->label_exist(label)){
+        for (int i = 0; i < this->max_segments; ++i) {              // loop scanning all segments of current image
+            if ((((Image *) current->get_data())->get_segments_array())[i] == label) {
+                *images[*index] = (int) (current->get_key());
+                *segments[*index] = i;
+                *index++;
+            }
+        }
+    }
+
+    initial_segments_arrays(current->get_right_son(),label,index,images,segments);
+
+}

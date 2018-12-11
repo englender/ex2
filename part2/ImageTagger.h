@@ -23,7 +23,8 @@ public:
     bool delete_label_from_image(const int segmentID);
     int* get_all_unlabeledSegments(int *segments);
     int num_of_unlabeledSegments();
-
+    bool label_exist(int label);
+    const int* get_segments_array();
 };
 
 class ImageTagger {
@@ -38,6 +39,10 @@ public:
     bool image_exist(int imageID);
     bool add_image(int imageID);
     bool delete_image(int imageID);
+    int count_labels(int label);
+    int count_label_recurse(TreeNode<int,Image>* current, int sum, int label);
+    void initial_segments_arrays(TreeNode<int,Image>* current, int label, int *index,
+                                 int **images, int **segments);
 
 
 };
