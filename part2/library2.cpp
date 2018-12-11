@@ -7,6 +7,9 @@
 #include "ImageTagger.h"
 
 void *Init(int segments){
+    if(segments<=0)
+        return NULL;
+
     ImageTagger* DS;
 
     try {
@@ -103,7 +106,8 @@ StatusType GetAllUnLabeledSegments(void *DS, int imageID, int **segments,
     if(image_to_update== nullptr)
         return FAILURE;         //the image with imageID does not exist in tree
 
-    if(image_to_update->num_of_unlabeledSegments()==0)
+    *numOfSegments=image_to_update->num_of_unlabeledSegments();
+    if(*numOfSegments==0)
         return FAILURE;         //there is no segment without label
 
     *segments=image_to_update->get_all_unlabeledSegments(*segments);
@@ -133,8 +137,8 @@ StatusType GetAllSegmentsByLabel(void *DS, int label, int **images,
         return ALLOCATION_ERROR;
     }
     int index=0;
-    ((ImageTagger*)DS)->initial_segments_arrays(((Map_tree<int,Image>*)DS)->get_root(),
-                                                label,&index,images,segments);
+    TreeNode<int,Image>* tmp =((ImageTagger*)DS)->get_root();
+    ((ImageTagger*)DS)->initial_segments_arrays(tmp,label,&index,images,segments);
 
     return SUCCESS;
 }

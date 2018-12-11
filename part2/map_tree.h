@@ -512,6 +512,7 @@ void Map_tree<K,D>::add_node(const K& key,const D& data){
     }
     add_correct(new_node->get_key(),this->get_root(), nullptr);
     this->size++;
+
 }
 
 template <class K, class D>

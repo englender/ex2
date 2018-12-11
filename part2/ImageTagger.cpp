@@ -186,3 +186,7 @@ void ImageTagger::initial_segments_arrays(TreeNode<int,Image>* current, int labe
     initial_segments_arrays(current->get_right_son(),label,index,images,segments);
 
 }
+
+TreeNode<int,Image>* ImageTagger::get_root(){
+    return this->images->get_root();
+}

@@ -44,7 +44,7 @@ public:
     void initial_segments_arrays(TreeNode<int,Image>* current, int label, int *index,
                                  int **images, int **segments);
 
-
+    TreeNode<int,Image>* get_root();
 };
 
 
