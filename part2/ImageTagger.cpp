@@ -87,6 +87,15 @@ const int* Image::get_segments_array() {
     return this->segments_array;
 }
 
+int Image::count_num_labels_in_image(int label) {
+    int sum = 0;
+    for (int i = 0; i < this->max_segments; i++) {              // loop scanning all segments of current image
+        if (this->get_segments_array()[i] == label) {
+            sum++;
+        }
+    }
+    return sum;
+}
 //----------------------------------------------------------------------------//
 //---------------------------ImageTagger Implement----------------------------//
 //----------------------------------------------------------------------------//
@@ -160,9 +169,10 @@ int ImageTagger::count_label_recurse(TreeNode<int,Image>* current, int sum, int 
     sum+=count_label_recurse(current->get_right_son(), sum, label);
 
     if(((Image*)current->get_data())->label_exist(label))
-        sum++;
+        sum+=current->get_data()->count_num_labels_in_image(label);
     return sum;
 }
+
 
 
 void ImageTagger::initial_segments_arrays(TreeNode<int,Image>* current, int label,
@@ -173,12 +183,12 @@ void ImageTagger::initial_segments_arrays(TreeNode<int,Image>* current, int labe
 
     initial_segments_arrays(current->get_left_son(),label,index,images,segments);
 
-    if(((Image*)current->get_data())->label_exist(label)){
-        for (int i = 0; i < this->max_segments; ++i) {              // loop scanning all segments of current image
-            if ((((Image *) current->get_data())->get_segments_array())[i] == label) {
-                *images[*index] = (int) (current->get_key());
-                *segments[*index] = i;
-                *index++;
+    if((current->get_data())->label_exist(label)){
+        for (int i = 0; i < this->max_segments; i++) {              // loop scanning all segments of current image
+            if ((current->get_data())->get_segments_array()[i] == label) {
+                (*images)[*index] = (int) (current->get_key());
+                (*segments)[*index] = i;
+                *index=(*index)+1;
             }
         }
     }

@@ -665,23 +665,25 @@ void Map_tree<K,D>::add_correct(const K& key, TreeNode<K,D>* current_node, TreeN
     if (current_node->get_key() > key) {
         add_correct(key, current_node->get_left_son(),current_node);
         current_node->set_height();
-        if(current_node->get_balance_factor()==MAX_BF)
-            if(papa== nullptr)
+        if(current_node->get_balance_factor()==MAX_BF) {
+            if (papa == nullptr)
                 this->set_root(roll_left(current_node));
             else {
-                tmp_ptr=roll_left(current_node);
+                tmp_ptr = roll_left(current_node);
                 reconnect_to_papa(papa, tmp_ptr);
             }
+        }
     } else {
         add_correct(key, current_node->get_right_son(),current_node);
         current_node->set_height();
-        if(current_node->get_balance_factor()==MIN_BF)
-            if(papa== nullptr)
+        if(current_node->get_balance_factor()==MIN_BF) {
+            if (papa == nullptr)
                 this->set_root(roll_right(current_node));
             else {
                 tmp_ptr = roll_right(current_node);
                 reconnect_to_papa(papa, tmp_ptr);
             }
+        }
     }
 
 }

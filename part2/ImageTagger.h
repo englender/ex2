@@ -25,6 +25,8 @@ public:
     int num_of_unlabeledSegments();
     bool label_exist(int label);
     const int* get_segments_array();
+    int count_num_labels_in_image(int label);
+
 };
 
 class ImageTagger {
