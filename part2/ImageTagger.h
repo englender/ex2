@@ -35,7 +35,7 @@ class ImageTagger {
 
 public:
     ImageTagger(int segments);
-//    ~ImageTagger();
+    ~ImageTagger();
     int get_segments();
     Image* get_image(int imageID);
     bool image_exist(int imageID);

@@ -10,7 +10,7 @@
 
 Image::Image(const int imageID, const int segments): imageID(imageID),
                                                                  max_segments(segments){
-    this->segments_array=(int*)malloc(this->max_segments* sizeof(int));
+    this->segments_array=(int*)malloc( sizeof(int)*this->max_segments);
 
     this->unlabled_segments=new Node_list<int,int>();
 
@@ -102,6 +102,10 @@ int Image::count_num_labels_in_image(int label) {
 
 ImageTagger::ImageTagger(int segments) : max_segments(segments){
     this->images=new Map_tree<int,Image>;
+}
+
+ImageTagger::~ImageTagger(){
+    delete this->images;
 }
 
 int ImageTagger::get_segments(){
