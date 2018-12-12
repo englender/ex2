@@ -59,7 +59,7 @@ bool Image::delete_label_from_image(const int segmentID){
 }
 
 int* Image::get_all_unlabeledSegments(int *segments){
-    segments=(int*)malloc(sizeof(this->num_of_unlabeledSegments()));
+    segments=(int*)malloc(sizeof(int)*this->num_of_unlabeledSegments());
 
     ListNode<int,int>* node_ptr=this->unlabled_segments->get_first();
 
@@ -156,21 +156,23 @@ bool ImageTagger::delete_image(int imageID) {
 }
 
 int ImageTagger::count_labels(int label){
+    int sum=0;
+    this->count_label_recurse(this->images->get_root(),&sum,label);
 
-    return this->count_label_recurse(this->images->get_root(),0,label);
+    return sum;
 }
 
 
-int ImageTagger::count_label_recurse(TreeNode<int,Image>* current, int sum, int label){
+void ImageTagger::count_label_recurse(TreeNode<int,Image>* current, int *sum, int label){
     if(current== nullptr)
-        return 0;
+        return;
 
-    sum+=count_label_recurse(current->get_left_son(), sum, label);
-    sum+=count_label_recurse(current->get_right_son(), sum, label);
+    count_label_recurse(current->get_left_son(), sum, label);
+    count_label_recurse(current->get_right_son(), sum, label);
 
     if(((Image*)current->get_data())->label_exist(label))
-        sum+=current->get_data()->count_num_labels_in_image(label);
-    return sum;
+        (*sum)+=current->get_data()->count_num_labels_in_image(label);
+    return;
 }
 
 
