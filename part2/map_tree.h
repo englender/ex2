@@ -39,7 +39,7 @@ public:
  * Input:   none.
  * Output:  the node's data
  */
-    D* get_data();
+    D& get_data();
 
 /*
  * Description: gets the node's height
@@ -339,8 +339,8 @@ const K& TreeNode<K,D>::get_key() {
 }
 
 template <class K, class D>
-D* TreeNode<K,D>::get_data() {
-    return &this->data;
+D& TreeNode<K,D>::get_data() {
+    return this->data;
 }
 
 template <class K, class D>

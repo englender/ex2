@@ -22,9 +22,7 @@ Image::Image(const int imageID, const int segments): imageID(imageID),
 
 Image::~Image(){
     delete[] this->segments_array;
-//    Node_list<int,int>* ptr=this->unlabled_segments;
-//    delete ptr;
-
+    delete (unlabled_segments);
 }
 
 
@@ -134,7 +132,7 @@ Image* ImageTagger::get_image(int imageID){
     if(image_node== nullptr){
         return nullptr;
     }
-    Image* image= *(image_node->get_data());
+    Image* image= (image_node->get_data());
     return image;
 }
 
@@ -165,7 +163,7 @@ bool ImageTagger::delete_image(int imageID) {
     TreeNode<int,Image*>* image_node= this->images->find(imageID);
     if(image_node == nullptr)
         return false;           //image does not exist
-    Image* image_to_delete = *image_node->get_data();
+    Image* image_to_delete = image_node->get_data();
     delete (image_to_delete);
     this->images->remove_node(image_node);
 
@@ -187,8 +185,8 @@ void ImageTagger::count_label_recurse(TreeNode<int,Image*>* current, int *sum, i
     count_label_recurse(current->get_left_son(), sum, label);
     count_label_recurse(current->get_right_son(), sum, label);
 
-    if((*current->get_data())->label_exist(label))
-        (*sum)+=(*current->get_data())->count_num_labels_in_image(label);
+    if((current->get_data())->label_exist(label))
+        (*sum)+=(current->get_data())->count_num_labels_in_image(label);
 
 }
 
@@ -202,9 +200,9 @@ void ImageTagger::initial_segments_arrays(TreeNode<int,Image*>* current, int lab
 
     initial_segments_arrays(current->get_left_son(),label,index,images,segments);
 
-    if((*current->get_data())->label_exist(label)){
+    if((current->get_data())->label_exist(label)){
         for (int i = 0; i < this->max_segments; i++) {              // loop scanning all segments of current image
-            if ((*current->get_data())->get_segments_array()[i] == label) {
+            if ((current->get_data())->get_segments_array()[i] == label) {
                 (*images)[*index] = (int) (current->get_key());
                 (*segments)[*index] = i;
                 *index=(*index)+1;
@@ -224,7 +222,7 @@ void ImageTagger::delete_all_data_fields(TreeNode<int,Image*>* tmp) {
     if(tmp== nullptr)
         return;
 
-    delete *(tmp->get_data());
+    delete (tmp->get_data());
 
     delete_all_data_fields(tmp->get_left_son());
     delete_all_data_fields(tmp->get_right_son());
