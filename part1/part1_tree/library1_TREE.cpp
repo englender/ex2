@@ -75,5 +75,10 @@ StatusType Size(void *DS, int *n){
 }
 
 void Quit(void** DS){
-    delete (Map_tree<int,void*>**)DS;
+    if(DS== nullptr)
+        return;;
+
+    auto tmp=(Map_tree<int,void*>*)(*DS);
+    delete tmp;
+    *DS=NULL;
 }
