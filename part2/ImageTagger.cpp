@@ -22,6 +22,8 @@ Image::Image(const int imageID, const int segments): imageID(imageID),
 
 Image::~Image(){
     delete[] this->segments_array;
+//    Node_list<int,int>* ptr=this->unlabled_segments;
+//    delete ptr;
 
 }
 
