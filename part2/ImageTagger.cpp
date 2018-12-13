@@ -10,7 +10,7 @@
 
 Image::Image(const int imageID, const int segments): imageID(imageID),
                                                                  max_segments(segments){
-    this->segments_array=(int*)malloc( sizeof(int)*this->max_segments);
+    this->segments_array=new int[max_segments] ;
 
     this->unlabled_segments=new Node_list<int,int>();
 
@@ -21,7 +21,7 @@ Image::Image(const int imageID, const int segments): imageID(imageID),
 }
 
 Image::~Image(){
-    free(this->segments_array);
+    delete[] this->segments_array;
 
 }
 
@@ -58,8 +58,7 @@ bool Image::delete_label_from_image(const int segmentID){
     return true;
 }
 
-int* Image::get_all_unlabeledSegments(int *segments){
-    segments=(int*)malloc(sizeof(int)*this->num_of_unlabeledSegments());
+void Image::get_all_unlabeledSegments(int *segments){
 
     ListNode<int,int>* node_ptr=this->unlabled_segments->get_first();
 
@@ -67,8 +66,19 @@ int* Image::get_all_unlabeledSegments(int *segments){
         segments[i]=node_ptr->get_key();
         node_ptr=node_ptr->get_next();
     }
-    return segments;
 }
+
+
+
+
+ListNode<int,int>* Image::get_unlabel_list(){
+    return this->unlabled_segments->get_first();
+}
+
+
+
+
+
 
 int Image::num_of_unlabeledSegments(){
     return this->unlabled_segments->get_size();
@@ -101,11 +111,11 @@ int Image::count_num_labels_in_image(int label) {
 //----------------------------------------------------------------------------//
 
 ImageTagger::ImageTagger(int segments) : max_segments(segments){
-    this->images=new Map_tree<int,Image>;
+    this->images=new Map_tree<int,Image*>;
 }
 
 ImageTagger::~ImageTagger(){
-    delete this->images;
+    delete (this->images);
 }
 
 int ImageTagger::get_segments(){
@@ -117,12 +127,12 @@ Image* ImageTagger::get_image(int imageID){
      * returns Image type with the imageID
      * returns nullptr in case there is no image with the imageID
      */
-    TreeNode<int,Image>* image_node= this->images->find(imageID);
+    TreeNode<int,Image*>* image_node= this->images->find(imageID);
 
     if(image_node== nullptr){
         return nullptr;
     }
-    Image* image= (image_node->get_data());
+    Image* image= *(image_node->get_data());
     return image;
 }
 
@@ -146,16 +156,17 @@ bool ImageTagger::add_image(int imageID){
     if(this->image_exist(imageID))
         return false;                       //the image already exists
     Image *new_image=new Image(imageID,this->max_segments);
-    this->images->add_node(imageID,*new_image);
+    this->images->add_node(imageID,new_image);
     return true;
 }
 bool ImageTagger::delete_image(int imageID) {
-    TreeNode<int,Image>* image_node= this->images->find(imageID);
-
+    TreeNode<int,Image*>* image_node= this->images->find(imageID);
     if(image_node == nullptr)
         return false;           //image does not exist
-
+    Image* image_to_delete = *image_node->get_data();
+    delete (image_to_delete);
     this->images->remove_node(image_node);
+
     return true;                //image removed
 }
 
@@ -167,21 +178,21 @@ int ImageTagger::count_labels(int label){
 }
 
 
-void ImageTagger::count_label_recurse(TreeNode<int,Image>* current, int *sum, int label){
+void ImageTagger::count_label_recurse(TreeNode<int,Image*>* current, int *sum, int label){
     if(current== nullptr)
         return;
 
     count_label_recurse(current->get_left_son(), sum, label);
     count_label_recurse(current->get_right_son(), sum, label);
 
-    if(((Image*)current->get_data())->label_exist(label))
-        (*sum)+=current->get_data()->count_num_labels_in_image(label);
-    return;
+    if((*current->get_data())->label_exist(label))
+        (*sum)+=(*current->get_data())->count_num_labels_in_image(label);
+
 }
 
 
 
-void ImageTagger::initial_segments_arrays(TreeNode<int,Image>* current, int label,
+void ImageTagger::initial_segments_arrays(TreeNode<int,Image*>* current, int label,
                                           int *index, int **images,
                                           int **segments){
     if(current== nullptr)
@@ -189,9 +200,9 @@ void ImageTagger::initial_segments_arrays(TreeNode<int,Image>* current, int labe
 
     initial_segments_arrays(current->get_left_son(),label,index,images,segments);
 
-    if((current->get_data())->label_exist(label)){
+    if((*current->get_data())->label_exist(label)){
         for (int i = 0; i < this->max_segments; i++) {              // loop scanning all segments of current image
-            if ((current->get_data())->get_segments_array()[i] == label) {
+            if ((*current->get_data())->get_segments_array()[i] == label) {
                 (*images)[*index] = (int) (current->get_key());
                 (*segments)[*index] = i;
                 *index=(*index)+1;
@@ -203,6 +214,17 @@ void ImageTagger::initial_segments_arrays(TreeNode<int,Image>* current, int labe
 
 }
 
-TreeNode<int,Image>* ImageTagger::get_root(){
+TreeNode<int,Image*>* ImageTagger::get_root(){
     return this->images->get_root();
+}
+
+void ImageTagger::delete_all_data_fields(TreeNode<int,Image*>* tmp) {
+    if(tmp== nullptr)
+        return;
+
+    delete *(tmp->get_data());
+
+    delete_all_data_fields(tmp->get_left_son());
+    delete_all_data_fields(tmp->get_right_son());
+
 }

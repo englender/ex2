@@ -21,16 +21,16 @@ public:
     bool add_label_to_image(const int segmentID, const int label);
     const int get_label_from_image(const int segmentID);
     bool delete_label_from_image(const int segmentID);
-    int* get_all_unlabeledSegments(int *segments);
+    void get_all_unlabeledSegments(int *segments);
     int num_of_unlabeledSegments();
     bool label_exist(int label);
     const int* get_segments_array();
     int count_num_labels_in_image(int label);
-
-};
+    ListNode<int,int>* get_unlabel_list();
+    };
 
 class ImageTagger {
-    Map_tree<int,Image>* images;
+    Map_tree<int,Image*>* images;
     int max_segments;
 
 public:
@@ -42,11 +42,12 @@ public:
     bool add_image(int imageID);
     bool delete_image(int imageID);
     int count_labels(int label);
-    void count_label_recurse(TreeNode<int,Image>* current, int* sum, int label);
-    void initial_segments_arrays(TreeNode<int,Image>* current, int label, int *index,
+    void count_label_recurse(TreeNode<int,Image*>* current, int* sum, int label);
+    void initial_segments_arrays(TreeNode<int,Image*>* current, int label, int *index,
                                  int **images, int **segments);
 
-    TreeNode<int,Image>* get_root();
+    TreeNode<int,Image*>* get_root();
+    void delete_all_data_fields(TreeNode<int,Image*>* tmp);
 };
 
 

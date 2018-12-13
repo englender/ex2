@@ -25,6 +25,7 @@ class TreeNode{
     TreeNode* right_son;
 public:
     TreeNode(const K& key, const D& data);
+//    ~TreeNode();
 
 /*
  * Description: gets the node's key
@@ -325,6 +326,12 @@ TreeNode<K,D>::TreeNode(const K& key, const D& data) : key(key), data(data), hei
                                                left_son(nullptr),
                                                right_son(nullptr){
 }
+
+//template <class K, class D>
+//TreeNode<K,D>::~TreeNode(){
+//    delete &data;
+//    delete &key;
+//}
 
 template <class K, class D>
 const K& TreeNode<K,D>::get_key() {
