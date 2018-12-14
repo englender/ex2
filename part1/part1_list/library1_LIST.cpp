@@ -74,5 +74,11 @@ StatusType Size(void *DS, int *n){
 }
 
 void Quit(void** DS){
-    delete (Node_list<int,void*>**)DS;
+    if(DS == nullptr)
+        return;
+
+    auto tmp=(Node_list<int,void*>*)(*DS);
+    delete tmp;
+
+    *DS=NULL;
 }
