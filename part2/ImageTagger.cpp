@@ -28,7 +28,7 @@ Image::~Image(){
 
 bool Image::add_label_to_image(const int segmentID, const int label){
     /*
-     * receives the segmentID and label to add to the relevent segmentID
+     * receives the segmentID and label to add to the relevant segmentID
      * if the segment already has a label returns false
      * updates the segments ID label, and removes it from unlabeled_segments list
      */
@@ -69,15 +69,9 @@ void Image::get_all_unlabeledSegments(int *segments){
 }
 
 
-
-
 ListNode<int,int>* Image::get_unlabel_list(){
     return this->unlabled_segments->get_first();
 }
-
-
-
-
 
 
 int Image::num_of_unlabeledSegments(){
