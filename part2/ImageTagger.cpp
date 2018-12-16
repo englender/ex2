@@ -144,14 +144,14 @@ bool ImageTagger::image_exist(int imageID){
 bool ImageTagger::add_image(int imageID){
     /*
      * return false if the imageID already exist, and the add was not completed
-     * else, adds create new Image with the imageID, add it to the tree,
+     * else, create new Image with the imageID, add it to the tree,
      * and return true
     */
     if(this->image_exist(imageID))
         return false;                       //the image already exists
     Image *new_image=new Image(imageID,this->max_segments);
     this->images->add_node(imageID,new_image);
-    return true;
+    return true;                            //image added
 }
 bool ImageTagger::delete_image(int imageID) {
     TreeNode<int,Image*>* image_node= this->images->find(imageID);
@@ -192,6 +192,7 @@ void ImageTagger::initial_segments_arrays(TreeNode<int,Image*>* current, int lab
     if(current== nullptr)
         return;
 
+    //in-order scan
     initial_segments_arrays(current->get_left_son(),label,index,images,segments);
 
     if((current->get_data())->label_exist(label)){
@@ -216,6 +217,7 @@ void ImageTagger::delete_all_data_fields(TreeNode<int,Image*>* tmp) {
     if(tmp== nullptr)
         return;
 
+    //pre-order scan
     delete (tmp->get_data());
 
     delete_all_data_fields(tmp->get_left_son());
